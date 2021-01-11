@@ -86,7 +86,7 @@
     <div id="currActive">
       <button onclick="replay()">重玩</button>
       <span id="currActivePlayer"></span>
-      <button onclick="retract()">悔棋</button>
+      <button onclick="retract()">悔棋(<span id="retractStep"></span>)</button>
     </div>
     <canvas id="canvas" width="500" height="550"></canvas>
     <div id="panel">
@@ -100,10 +100,18 @@
   <script>
     var stepHistory = []; //历史操作
     function saveFive(step) {
-      if (stepHistory.length >= 5) {
+      if (stepHistory.length >= 6) {
         stepHistory.shift();
       }
       stepHistory.push(step);
+    }
+
+    function updateRetractStep(count) {
+      if (count >= 1) {
+        console.log(count);
+        $("#retractStep").text("" + (count - 1) + "");
+      }
+
     }
     var obj = {};
     // 初始化
@@ -323,6 +331,7 @@
       });
       this.cheer_arr_ALL = this.cheer_arr_B.concat(this.cheer_arr_R);
       saveFive(JSON.stringify(this.cheer_arr_ALL));
+      updateRetractStep(stepHistory.length);
     }
     // 更新棋局
     obj.updateChess = function () {
@@ -330,6 +339,7 @@
       this.init_back();
       var that = this;
       saveFive(JSON.stringify(this.cheer_arr_ALL));
+      updateRetractStep(stepHistory.length);
       $.each(this.cheer_arr_ALL, function (i, e) {
         that.drawPiece(e);
         that.drawChessText(e);
@@ -1390,6 +1400,7 @@
         $.each(obj.steps, function (iii, eee) {
           $("#ul").append("<li>" + eee + "</li>");
         });
+        updateRetractStep(stepHistory.length);
       }
     }
   </script>
